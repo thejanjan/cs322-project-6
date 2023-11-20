@@ -1,6 +1,0 @@
-arrow
-Flask
-nose
-pymongo
-MongoEngine
-Flask-RESTful
