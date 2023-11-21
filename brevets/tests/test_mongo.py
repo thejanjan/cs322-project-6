@@ -21,17 +21,22 @@ db = mongo_client.mydb
 
 brevet_test_data = {
     'start_time': "2023-08-09T18:16",
-    'brevet_dist': 400,
-    'controls': ['5', '267', '13', '', '', '', '', '', '', '',
+    'length': 400,
+    'distances': ['5', '267', '13', '', '', '', '', '', '', '',
                  '', '', '', '', '', '', '', '', '', ''],
     'locations': ['Texas', 'Soup', 'Milk', '', '', '', '', '', '', '',
                   '', '', '', '', '', '', '', '', '', 'Surprise!'],
 }
 
 
+brevet_id = None
+
+
 def test_db_insert():
-    brevet_db.store_brevet(**brevet_test_data)
+    global brevet_id
+    brevet_id = brevet_db.store_brevet(**brevet_test_data)
 
 
 def test_db_retrieve():
-    assert brevet_db.get_brevet() == brevet_test_data
+    assert brevet_id is not None
+    assert brevet_db.get_brevet(brevet_id) == brevet_test_data

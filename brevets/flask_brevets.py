@@ -7,9 +7,8 @@ import flask
 from flask import request
 import arrow  # Replacement for datetime, based on moment.js
 import acp_times  # Brevet time calculations
-import config
-
 import logging
+import os
 
 import brevet_db
 
@@ -17,7 +16,6 @@ import brevet_db
 # Globals
 ###
 app = flask.Flask(__name__)
-CONFIG = config.configuration()
 
 ###
 # Pages
@@ -128,10 +126,11 @@ def _display():
 
 #############
 
-app.debug = CONFIG.DEBUG
-if app.debug:
-    app.logger.setLevel(logging.DEBUG)
-
 if __name__ == "__main__":
-    print("Opening for global access on port {}".format(CONFIG.PORT))
-    app.run(port=CONFIG.PORT, host="0.0.0.0")
+    app.debug = os.environ.get('DEBUG')
+    if app.debug:
+        app.logger.setLevel(logging.DEBUG)
+
+    port = os.environ.get('PORT')
+    print("Opening for global access on port {}".format(port))
+    app.run(port=port, host="0.0.0.0")
