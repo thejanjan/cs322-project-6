@@ -97,7 +97,9 @@ def _submit():
 
     # Store values in db.
     try:
-        brevet_db.store_brevet(start_time, brevet_dist, controls, locations)
+        if brevet_db.store_brevet(start_time, brevet_dist, controls, locations, app) == -1:
+            app.logger.debug("db store attempt fail")
+            return flask.jsonify(result={"code": 2})
     except Exception as e:
         # DB entry failed.
         app.logger.debug("db entry failure: {}".format(e))
@@ -113,7 +115,7 @@ def _display():
 
     # Try to get DB value.
     try:
-        query = brevet_db.get_brevet()
+        query = brevet_db.get_brevet(app=app)
         app.logger.debug("query={}".format(query))
     except Exception as e:
         # DB query failed.

@@ -34,7 +34,7 @@ brevet_id = None
 
 def test_db_insert():
     global brevet_id
-    brevet_id = brevet_db.store_brevet(**brevet_test_data)
+    assert brevet_db.store_brevet(**brevet_test_data)
 
 
 def test_db_retrieve():

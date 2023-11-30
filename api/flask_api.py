@@ -17,7 +17,7 @@ app = Flask(__name__)
 api = Api(app)
 
 # Bind resources to paths here:
-api.add_resource(Brevet, '/api/brevet/<int:brevet_id>')
+api.add_resource(Brevet, '/api/brevet/<string:bid>')
 api.add_resource(Brevets, '/api/brevets')
 
 #############
@@ -28,5 +28,5 @@ if __name__ == "__main__":
         app.logger.setLevel(logging.DEBUG)
 
     port = os.environ.get('PORT')
-    print("Opening for global access on port {}".format(port))
+    app.logger.debug("Opening for global access on port {}".format(port))
     app.run(port=port, host="0.0.0.0")

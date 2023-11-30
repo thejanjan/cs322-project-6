@@ -1,4 +1,7 @@
+import time
+
 from mongoengine import *
+import json
 
 
 class Checkpoint(EmbeddedDocument):
@@ -28,21 +31,17 @@ class Brevet(Document):
 
     @classmethod
     def from_request(cls, request):
-        start_time = request.args.get('start_time', '2021-01-01T00:00', type=str)
-        length = request.args.get('length', 200, type=float)
-        distances = [val for key, val in request.args.items(multi=True) if key == 'distances']
-        locations = [val for key, val in request.args.items(multi=True) if key == 'locations']
-        open_times = [val for key, val in request.args.items(multi=True) if key == 'open_times']
-        close_times = [val for key, val in request.args.items(multi=True) if key == 'close_times']
+        data = request.get_data(as_text=True)
+        data = json.loads(data)
 
         # Sanity checking.
-        if not distances:
+        if not any(d for d in data['distances'] if d):
             raise ValueError('Request had unspecified distances')
 
         # Create brevet.
         return Brevet(
-            length=length,
-            start_time=start_time,
+            length=data['length'],
+            start_time=data['start_time'],
             checkpoints=[
                 Checkpoint(
                     distance=distance,
@@ -50,6 +49,7 @@ class Brevet(Document):
                     open_time=open_time,
                     close_time=close_time,
                 )
-                for distance, location, open_time, close_time in zip(distances, locations, open_times, close_times)
+                for distance, location, open_time, close_time in zip(data['distances'], data['locations'], data['open_times'], data['close_times'])
+                if distance and open_time and close_time
             ]
         )
